@@ -1,0 +1,11 @@
+.affix-md {
+  position: fixed; }
+
+@media (max-width: 992px) {
+
+	.affix-md{
+	    position: relative;
+	}
+    }
+
+}
