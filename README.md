@@ -1,23 +1,5 @@
-# Jekyll Doc Theme
+# OpenSSE Website
 
-Go to [the website](https://aksakalli.github.io/jekyll-doc-theme/) for detailed information and demo.
+This webpage uses the [Jekyll Doc Theme](https://aksakalli.github.io/jekyll-doc-theme/) which is released under [the MIT license](LICENSE).
 
-## Running locally
-
-You need Ruby and gem before starting, then:
-
-```bash
-# install bundler
-gem install bundler
-
-# clone the project
-git clone https://github.com/aksakalli/jekyll-doc-theme.git
-cd jekyll-doc-theme
-
-# run jekyll with dependencies
-bundle exec jekyll serve
-```
-
-## License
-
-Released under [the MIT license](LICENSE).
+The favicon and the logo are from [Icon8](http://icons8.com/).
