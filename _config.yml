@@ -2,12 +2,14 @@
 title: OpenSSE
 # email: your-email@domain.com
 description: >
-  Web page of the OpenSSE project.
+  Implementation of Symmetric Searchable Encryption.
 
 # baseurl: "/" # the subpath of your site, e.g. /blog/
 url: https://opensse.github.io # the base hostname & protocol for your site
 git_address: https://github.com/opensse/
 git_edit_address: https://github.com/opensse/opensse.github.io/tree/master
+
+logo: /img/logonav.png
 
 # theme options from https://bootswatch.com/
 # comment out this to use default Bootstrap
