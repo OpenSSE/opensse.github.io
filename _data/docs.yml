@@ -1,0 +1,11 @@
+- title: Getting Started
+  docs:
+  - home
+  - getting
+  - contributing
+
+- title: Searchable Encryption
+  docs:
+  - searchable-encryption
+  - sophos
+  - diana

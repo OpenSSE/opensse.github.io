@@ -1,0 +1,40 @@
+---
+layout: default
+sectionid: faq
+---
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-4">
+			<div data-spy="affix">
+            <div class="well">
+                <h4>FAQs</h4>
+                <ul class="list-unstyled post-list-container">
+                    {% for qa in site.data.faq %}
+                    <li><a href="#{{ forloop.index }}">{{ qa.question }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+			</div>
+        </div>
+		
+        <div class="col-md-8">
+		
+            <h2 class="header-light regular-pad">Frequently Asked Questions</h2>
+	
+	{% for qa in site.data.faq %}
+
+            <a name="{{ forloop.index }}"></a>
+			<h3 class="header-light regular-pad">{{ qa.question }}</h3>
+            <p>
+				{{ qa.answer | markdownify }}
+			</p>
+
+	{% endfor %}
+		</div>
+    
+	</div>
+	
+</div>

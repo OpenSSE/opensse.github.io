@@ -1,0 +1,15 @@
+- question: What is OpenSSE?
+  answer: "OpenSSE is an Open Source implementation of single-keyword searchable encryption schemes in C and C++. It is mainly targeted at research purpose but might try to reach production-level quality."
+  
+- question: Who developped OpenSSE?
+  answer: "For the moment, the project has been mainly developed by Raphael Bost, with some code originating from [Mario Cornejo](https://github.com/mcornejo), Jeremy Maitin-Shepard, [Ian Miers](http://www.cs.jhu.edu/%7Eimiers/), [Samuel Neves](https://eden.dei.uc.pt/%7Esneves/), Intel, mbedTLS"
+  
+- question: How is OpenSSE licensed and why?
+  answer: "Most of the code of OpenSSE is licensed under the [Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html). The AGPL is a stronger version of the [GPL](https://www.gnu.org/licenses/gpl-3.0.html) which enforces the provision of the complete (modified) source code when it is used for service over a network.
+  This license has been chosen to ensure that the current and future users of OpenSSE will always have access to the source code when using it, even through a server.
+  
+  Some other parts of the code (especially some primitive implementations in the cryptographic toolkit) are released under a different license, such as the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0), the Intel Open Software License, or even under public domain. Look at the READMEs of the different components of the project for further details."
+  
+  
+- question: Can I use OpenSSE in production?
+  answer: "**NO, absolutely not**! For the moment OpenSSE is a research project. The code, and in particular the cryptographic toolkit lacks good C/C++ security practice, and it has never been externally reviewed. **Do not use OpenSSE in practice with sensitive data.**"
