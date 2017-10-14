@@ -37,6 +37,11 @@ layout: default
                 </li>
                 {% endif %}
             </ul>
+			
+			{% if site.disqus.shortname %}
+			  {% include disqus_comments.html %}
+			{% endif %}
+			
         </div>
 
     </div>
