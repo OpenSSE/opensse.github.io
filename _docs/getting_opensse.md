@@ -3,6 +3,8 @@ title: Installation
 permalink: /docs/getting/
 ---
 
+[![Build Status](https://travis-ci.org/OpenSSE/opensse-schemes.svg?branch=master)](https://travis-ci.org/OpenSSE/opensse-schemes)
+
 # Pre-requisites
 ## All
 OpenSSE's schemes implementation need a compiler supporting C++14. It has been successfully built and tested on Ubuntu 14 LTS using both clang 3.6 and gcc 4.9.3 and on Mac OS X.10 using clang 7.0.0.
