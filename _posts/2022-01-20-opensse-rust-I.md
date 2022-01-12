@@ -57,3 +57,34 @@ To do so, this project needs a well-documented, and well-designed codebase. Easi
 These objectives are not great: they are hardly measurable, probably incomplete, and surely naïve. That is why they are merely goals. As stated in the last item, I am doing this for myself, not for a company, or for a future start-up. This is just for me, as a hobby (yes, I do have strange hobbies).
 
 ## Choosing the right tools
+
+The first and main tool to consider is of course the programming language. The ones I took into consideration are the following:
+* C/C++
+* Java
+* Rust
+* Go
+* Swift
+* Zig
+
+### Language properties
+
+Which were the criterion? I wanted a language that is widespread, and well known. This forbids options like OCaml, Elixir, or Scala. Not that any of these are bad, they are just lesser known that the ones in my list.
+Another criterion was to pick languages I know and/or I wanted to work with. For example, I don't know Go, nor Swift, but I definitely am curious. On the other hand, I really do not want to use Python (besides the fact that I don't believe it can fit any of the objectives above). Next, I need a "systems programming language". This kind of rules out Java, but not quite as it is a very language that is very good when it comes to networking, and the portability is amazing.
+By 'portability', here I mean the ability to reuse essentially the same codebase for different operating systems, my targets being Linux, BSD, MacOS (mainly for development, but also because, in the Academia, a lot of people use Apple computers), and maybe, some day, Windows. This is definitely Java's strong point, and excludes *de facto* languages like Objective-C (which I know quite a bit), or C# (which I do not intend to know).
+Finally, efficiency is also an important criterion, although I could choose to implement the cryptographic primitives in a very performant language and then use this library from an other language, fitting the schemes' implementation better.
+
+From that point of view, Java is definitely behind all the other picks, being the only non-compiled language. However, with Java, you have access to a huge array of very useful libraries when dealing with databases, for example, and not the least, Lucene. Java is also garbage collected, as is Go.
+
+### Tooling
+
+An other important element is the tooling associated with the language. This includes the package managers, build systems, static and dynamic analysis tools. I do exclude more generic toolings like code formatters, code coverage, continuous integration as they tend to be now available to every language.
+
+From that point of view, C and C++ are grim. There is no widespread and easily usable package manager: [vcpkg](https://vcpkg.io/) is definitely a good tool, but as dependencies are usually distributed as dynamic libraries through the package manager of the distribution (for Linux, but Homebrew or MacPorts have essentially the same role on MacOS for that matter), it makes things hard when it comes to binary distribution and dynamic libraries (how do you make sure that your local build of RocksDB will behave similarly to the binary distributed by `apt` on an old Ubuntu LTS?).
+My experience with vcpkg (or Conan) is essentially zero, so I might (read surely) be mistaken here.
+
+Also, CMake is... I have mixed feelings about CMake: it is super powerful, but not easy to use, and quite verbose. There is no surprise why it is used for projects like LLVM: it is fast, precise, cross-platform, has easily configurable builds, and multiple backends (`make`, Ninja, Visual Studio,...). In the past, I have also used [SCons](https://scons.org): being able to write you build script in Python is great, but SCons is super slow, and not really easier to use than CMake, at least for C/C++ projects.
+But, in the end, I am not entirely convinced by CMake, especially when compared to modern languages like Rust, Go, Swift, or Zig, which embed their build systems, and do it well, often together with a package manager.
+
+On the static analysis side, the picture is different: C/C++ and Java being the oldest languages of the list, one has access to a lot of interesting resources when it comes to finding code smells, evaluating code quality, or just finding bugs. Static analysis tools for C and C++ are particularly interesting and powerful, even the free ones, like `clang-tidy`. I also had the chance to use [Coverity Scan](https://scan.coverity.com), and it has been super helpful. Both tools allowed me to fix numerous bugs, even though I feel like most of these bugs would not have existed with a memory-safe language like all the other languages of the list, except Zig. So it feels like a zero-sum game: we have nice tools to find bugs which would not have had existed with other languages.
+
+For dynamic analysis, we have a similar picture: C and C++ have access to great tools such as Valgrind or the sanitizers (ASan, UBSan, TSan, MemSan, and many others). Rust also has access to very interesting tools, like [Miri](https://github.com/rust-lang/miri), which can help finding bugs in `unsafe` code, as well as the aforementioned sanitizers (in particular ASan, which can find memory leaks, those being allowed in safe Rust). I was not able to find any interesting or relevant information about the other languages, so I considered that the dynamic analysis tooling was lacking for those.
