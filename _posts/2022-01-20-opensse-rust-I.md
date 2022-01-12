@@ -18,7 +18,7 @@ So let's start...
 ## Why re-implementing?
 
 The current implementation of OpenSSE in C++ is quite substantial. My work on the code spanned over 5 years: the first commit dates back from March 2016, for the Σoφoς implementation accompanying the [CCS paper](https://ia.cr/2016/728), and the last one from June 2021, when I was finishing the implementation of the [Tethys page-efficient scheme](https://ia.cr/2021/716).
-The result of those 5 years is around 30k lines of code and tests, a project that has continuous integration with sanitizers to check for memory errors, a good code coverage (even though this metric is not perfect), static analysis, and, most important of all, a few users, who are using it as the reference implementation of Σoφoς, Diana, Janus and probably in the future, Tethys.
+The result of those 5 years is around 26k lines of code and tests, a project that has continuous integration with sanitizers to check for memory errors, a good code coverage (even though this metric is not perfect), static analysis, and, most important of all, a few users, who are using it as the reference implementation of Σoφoς, Diana, Janus and probably in the future, Tethys.
 
 However, I feel quite unconformable with this code, for many reasons. Let me try to list some of them:
 1. It is in C++. On the one hand, the code is very efficient, and some of the latter schemes could not have been implemented in any other language (except for C), due to its reliance on low-level libraries for asynchronous IOs. On the other hand, using C++ is dangerous: I have no formal background in C or C++ (read, I learned it all by myself), especially on the security side. And even though I use unit testing and sanitizers to make sure the code is not *too* buggy, there is still a security risk with using C or C++, especially when developing a security application.
@@ -37,5 +37,23 @@ Last, I could start from scratch, by using tools I would be more comfortable wit
 
 And this is this last option I chose. Now, I need to pick the tools.
 
-## Why Rust?
+## What are the objectives of this new implementation?
 
+Now that we are building something from the ground up, we can chose our objectives, the goals we will try to tend to, and from there chose our tools.
+So let's make a list, order by importance:
+1. **Secure and safe code.** We are coding a security application that will store users' data, and we cannot mess with the security. This means that the server must be secured, even though the security guarantees of the SSE schemes we will implement tell us that the server cannot have access to *too much* sensitive data (see all the discussions and papers about leakage functions and leakage-abuse attacks for the definition of 'too much'), as the server can act as a point of entry for an attacker into the users' network. It actually also implies that the client side of the SSE protocols must be secured.
+The safety must not be forgotten either. By safety, I mean the possibility of misusing the APIs (e.g. by sending a query to the wrong server).
+
+2. **Easy, understandable and usable APIs.** The goal of this project is to be used, both as a reference implementation serving as a comparison point to other works, and as a library for other larger applications. Hence, the interfaces must be consistent across the different schemes, easy to use, and hard to misuse. The trendy term for that in the cryptographic world is *boring*: the APIs should come with no surprise. However, this does not mean they cannot be complex or only involve simple operations; it implies they are not complicated.
+
+3. **Efficient and fast implementations.** The ultimate goal is to be competitive with modern, unencrypted key-value stores, and this cannot be achieved without offering a fast implementation of the schemes. Also, we want to be both fast *and* efficient: many of the schemes implemented in OpenSSE are IO-bounded, and spawning dozens of threads to respond to a query might be a waste of resources or might scale poorly.
+Note however, that it is only third on our list: in our case, performance is useless without security, and the most performant system is the one that is not used.
+
+4. **Reusable and understandable code.** I really do not want to be alone to contribute to this project, and I hope that sometimes someone will be able to work on it in order to improve its performance, fix a bug or implement a new scheme, without me (do you know about the [bus factor](https://en.wikipedia.org/wiki/Bus_factor)?). And even for me, it would be better to have a healthy ground for future implementations or uses.
+To do so, this project needs a well-documented, and well-designed codebase. Easier said than done.
+
+5. **Having a fun time.** Duh! I really don't have a lot of time, so it will be better if I enjoy working on this new project. Maybe, I should put that first.
+
+These objectives are not great: they are hardly measurable, probably incomplete, and surely naïve. That is why they are merely goals. As stated in the last item, I am doing this for myself, not for a company, or for a future start-up. This is just for me, as a hobby (yes, I do have strange hobbies).
+
+## Choosing the right tools
