@@ -27,7 +27,7 @@ However, I feel quite unconformable with this code, for many reasons. Let me try
 
 3. Despite being re-used, it is getting less and less "plug-and-play" for the user. During a development phase, as the dependencies I use are up-to-date, the CI gives me the guarantee, that a compiling the project works without any quirks (at least on a new install). Unfortunately, I am getting more and more problems with the variety of "compatible" platforms (MacOS and Linux) as well as older distributions. It seems to me that I am starting to lean towards these open sourced implementations of papers that cannot be realistically recompiled and reused by people other than their original developer (and I hate that).
 
-4. The build system and the package management is terrible. Sure using CMake is better than writing my own Makefile. Sure, I can use git submodules to embed some of the dependencies (i.e. Google Test). But this should not have to be, and when I am using out-of-tree dependencies, I regularly have issues. For example, the build instructions changed in the last two years for gRPC. Using CMake to build the library is officially supported for Windows only: Bazel is the recommended build system for gRPC on Linux. But I do use CMake right now, and I *de facto* rely on CMake being able to find the gRPC headers and library somewhere on my system, usually through CMake install files. Files which are not produced anymore with a Bazel build. I also have issues with RocksDB, but this time with linking. I have not been able to fix these.
+4. The build system and the package management is terrible. Sure using CMake is better than writing my own Makefile. Sure, I can use git submodules to embed some of the dependencies (i.e. Google Test). But this should not have to be, and when I am using out-of-tree dependencies, I regularly have issues. For example, the build instructions changed in the last two years for [gRPC](https://grpc.io), the RPC framework I have been using in OpenSSE. Using CMake to build the library is officially supported for Windows only: [Bazel](https://bazel.build) is the recommended build system for gRPC on Linux. But I do use CMake right now, and I *de facto* rely on CMake being able to find the gRPC headers and library somewhere on my system, usually through CMake install files. Files which are not produced anymore with a Bazel build. I also have issues with RocksDB, but this time with linking. I have not been able to fix these.
 
 Now what? What are my options?
 
@@ -88,3 +88,60 @@ But, in the end, I am not entirely convinced by CMake, especially when compared 
 On the static analysis side, the picture is different: C/C++ and Java being the oldest languages of the list, one has access to a lot of interesting resources when it comes to finding code smells, evaluating code quality, or just finding bugs. Static analysis tools for C and C++ are particularly interesting and powerful, even the free ones, like `clang-tidy`. I also had the chance to use [Coverity Scan](https://scan.coverity.com), and it has been super helpful. Both tools allowed me to fix numerous bugs, even though I feel like most of these bugs would not have existed with a memory-safe language like all the other languages of the list, except Zig. So it feels like a zero-sum game: we have nice tools to find bugs which would not have had existed with other languages.
 
 For dynamic analysis, we have a similar picture: C and C++ have access to great tools such as Valgrind or the sanitizers (ASan, UBSan, TSan, MemSan, and many others). Rust also has access to very interesting tools, like [Miri](https://github.com/rust-lang/miri), which can help finding bugs in `unsafe` code, as well as the aforementioned sanitizers (in particular ASan, which can find memory leaks, those being allowed in safe Rust). I was not able to find any interesting or relevant information about the other languages, so I considered that the dynamic analysis tooling was lacking for those.
+
+
+### Performance
+
+Even though performance is not the top priority, it definitely is something important. And from that point of find, I considered three main criterions:
+* Is the language compiled to machine code?
+* Does it use garbage collection to manage memory?
+* Does it support asynchronous code is a nice way?
+
+I don't have much of a problem with interpreted languages or languages using bytecode in themselves. They can be very useful and practical for many tasks. But it is hard to use them for high-performance disk IOs, mainly because it requires close interaction with the OS's kernel and a small latency. Unfortunately, languages that are not compiled to machine code cannot efficiently use such interfaces: the interpreter or the VM adds a lot of latency on the one hand, and as these languages are cross-platform, it is hard to use a system-specific API.
+Sure, native extensions can be built, but these are often hard to develop and maintain (and it does not really solve the latency problem).
+
+Garbage collection is a huge debate point. It saves you from having to manage memory and also prevents bugs that can have a huge impact on performance (I am looking at you, memory leaks). On the other hand, it often works in a non-predictable manner and cause lag spikes at moments, during which we would like to avoid them.
+It is not a huge deal-breaker in my use case, but it is definitely something to take into account for low-latency applications.
+
+Finally, asynchronous programming. When implementing Thetys, I started using asynchronous APIs to access the disk in a controlled and precise way. This allowed me to reach a level of performance that had not been seen before with searchable encryption scheme.
+Unfortunately, due to the lack of support for asynchronous programming in C++, I had to fully commit to the *callback hell*, and the result is far from being amazing from the API point of view (even with the use of [`std::future`](https://en.cppreference.com/w/cpp/thread/future)). I would like to have something more elegant. And, unfortunately, executors will not be introduced in the standard until C++23, and the coroutines introduced in C++20 are not really usable IMHO. Zig seems to be in a similar state.
+On the other side of the spectrum, Go and Rust have a very good async ecosystem: it is a key feature of Go from its inception, and, for Rust, it is something quite new, but well tested and with a lot of libraries, tools and documentation (and hype).
+
+### Expressiveness
+
+Finally, as I am writing a library with (tentatively) well-thought APIs, I really need a language in which I can express complex types, genericity, logical dependencies, all of which can be checked with a strong typing.
+In the old french academic training in computer science, I have been taught OCaml and lambda calculus, and it still shows today.
+
+As such, the introduction of [concepts in C++20](https://en.cppreference.com/w/cpp/concepts) is a great addition to C++, especially as it has been closely combined with templates (a.k.a. generics).
+We can find similar features in most of the other languages in my list, with the notable exception of Go (well, it has been introduced very lately, in December 2021, and still looks a bit fresh).
+
+Note that this expressiveness requirement definitely barred Python from my list: it does not even have types...
+
+### Why Rust?
+
+In the end, I chose Rust, because I feel like it fits all the needs I have, on every aspect.
+The tooling is the best I have experienced in any language so far: no annoying package dependencies, easy builds, integrated testing and documentation (and testing *inside* the documentation). The performance is great. The async ecosystem is both efficient and very elegant (despite being difficult to access if you want to go beyond just using it). I love the type system (although I encountered annoying limitations -- see the next post).
+When I code in Rust, I feel like I am in charge (like in C++), but that I am helped in the meantime (unlike in C++): the compiler tells me when I make non-trivial mistakes and helps me to fix them.
+And when I am stuck, I can call for help a very welcoming and open community.
+
+Java's performance overhead is too much for this particular application, and, as I wrote before, it is too high level for what I have to do (interacting with the OS).
+
+Using C or C++ still is a huge liability, despite what can be said about "modern C++" and its security (no, you cannot always use smart pointers; yes, from the moment you start using raw pointers, there is a security risk).
+
+Swift looks very exciting: automatic reference counting is a good compromise between garbage collection, and manual memory management. It is also cross-platform now. However, it looks like it is a bit too high level, and it does not integrate very well with C and C++ libraries (e.g. the key-value stores I will have to use for Diana).
+Also, even though the support and the community is great for MacOS (and iOS for that matter), I am not sure that other *nix platforms are as well supported.
+
+Zig is an interesting case. It looks super efficient, and is a clear contender to C. It produces very efficient and very small binaries, and is an amazing language for HPC and embedded systems. Its compatibility with C is very appealing. Unfortunately, it is a new language for me, and it does not attract me a lot, especially given that I know Rust, which has not a massively different spirit, and which syntax I prefer.
+
+Finally, Go would be my second pick. The goroutines are look very nice: I like the concurrent and imperative approach a lot. I would (have) miss(ed) generics, though. The tooling looks great, too.
+Of course, I am also very interested in the language because of its spread (if Docker is implemented in Go, is *has* to be for a reason).
+But in the end, I chose Rust for its better performance, better safety (in particular for concurrent code) and my pre-existing knowledge of the language (meaning I can start implementing with the right idioms right away).
+
+
+## Conclusion
+
+So re-implementing OpenSSE in Rust it is.
+What are the next steps?
+
+First, I will explain the choices I made for the APIs. Then, I will, in an independent post, quickly describe the work I did for the cryptographic toolkit I will need later on. After that, I might write something about some meta-programming that I found useful to generically test code (Rust has a basic testing framework, not as rich as, for example, Google Test).
+Hopefully, we will quickly get into the actual implementation of the SSE schemes, starting with Diana and then Tethys.
