@@ -56,13 +56,13 @@ to list some of them:
 2. The code has been written over a long period: meaning it can be of quite
    uneven quality, with different APIs. It is not uniform. And this is an issue
    if I want to make the project more usable. I need good and well-documented
-   APIs, as well as completed implementations (for example, there is not
+   APIs, as well as completed implementations (for example, there is no
    protocol runner -- i.e. the network-facing components -- for Janus and
    Tethys).
 
 3. Despite being re-used, it is getting less and less "plug-and-play" for the
    user. During a development phase, as the dependencies I use are up-to-date,
-   the CI gives me the guarantee, that a compiling the project works without any
+   the CI gives me the guarantee, that compiling the project works without any
    quirks (at least on a new install). Unfortunately, I am getting more and more
    problems with the variety of "compatible" platforms (MacOS and Linux) as well
    as older distributions. It seems to me that I am starting to lean towards
@@ -70,7 +70,7 @@ to list some of them:
    recompiled and reused by people other than their original developer (and I
    hate that).
 
-4. The build system and the package management is terrible. Sure using CMake is
+4. The build system and the package management is terrible. Sure, using CMake is
    better than writing my own Makefile. Sure, I can use git submodules to embed
    some of the dependencies (i.e. Google Test). But this should not have to be,
    and when I am using out-of-tree dependencies, I regularly have issues. For
@@ -81,8 +81,8 @@ to list some of them:
    Linux. But I do use CMake right now, and I *de facto* rely on CMake being
    able to find the gRPC headers and library somewhere on my system, usually
    through CMake install files. Files which are not produced anymore with a
-   Bazel build. I also have issues with RocksDB, but this time with linking. I
-   have not been able to fix these.
+   Bazel build. I also have issues with RocksDB, but this time with linking, and
+   I have not been able to fix these.
 
 Now what? What are my options?
 
@@ -97,7 +97,7 @@ scratch, by using tools I would be more comfortable with, with a newly found
 motivation, redesigning the APIs, the code, assessing the purpose and the
 usefulness of each component.
 
-And this is this last option I chose. Now, I need to pick the tools.
+And this is this last option I chose. It is time to pick the tools.
 
 ## What are the objectives of this new implementation?
 
@@ -114,7 +114,7 @@ leakage-abuse attacks for the definition of 'too much'), as the server can act
 as a point of entry for an attacker into the users' network. It actually also
 implies that the client side of the SSE protocols must be secured. The safety
 must not be forgotten either. By safety, I mean the possibility of misusing the
-APIs (e.g. by sending a query to the wrong server).
+APIs (e.g. by sending a query using the wrong protocol).
 
 2. **Easy, understandable and usable APIs.** The goal of this project is to be
    used, both as a reference implementation serving as a comparison point to
