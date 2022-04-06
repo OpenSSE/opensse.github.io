@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "OpenSSE in Rust I - Restarting from scratch (or so)"
-date:   2022-01-12
+date:   2022-04-06
 author: Raphael Bost
 ---
 
