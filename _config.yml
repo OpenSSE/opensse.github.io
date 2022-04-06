@@ -32,21 +32,21 @@ exclude:
   - README.md
 timezone: Europe/Berlin
 defaults:
-- scope:
-    path: _posts
-    type: posts
-  values:
-    layout: post
-    sectionid: blog
+  - scope:
+      path: _posts
+      type: posts
+    values:
+      layout: post
+      sectionid: blog
 
-- scope:
-    path: _docs
-    type: docs
-  values:
-    layout: docs
-    sectionid: docs
-    seo:
-      type: "WebPage"
+  - scope:
+      path: _docs
+      type: docs
+    values:
+      layout: docs
+      sectionid: docs
+      seo:
+        type: "WebPage"
 
 collections:
   docs:
@@ -56,7 +56,8 @@ collections:
     permalink: /blog/:year/:month/:day/:title/
     output: true
 
-disqus:
-  # Leave shortname blank to disable comments site-wide.
-  # Disable comments for any post by adding `comments: false` to that post's YAML Front Matter.
-  shortname: opensse
+utterances:
+  repo: "OpenSSE/opensse.github.io"
+  issue-term: pathname"
+  label: "comments"
+  theme: "github-light"
