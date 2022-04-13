@@ -173,12 +173,12 @@ was to pick languages I know and/or I wanted to work with. For example, I don't
 know Go, nor Swift, but I definitely am curious. On the other hand, I really do
 not want to use Python (besides the fact that I don't believe it can fit any of
 the objectives above). Next, I need a "systems programming language". This kind
-of rules out Java, but not quite as it is a very language that is very good when
-it comes to networking, and the portability is amazing. By 'portability', here I
-mean the ability to reuse essentially the same codebase for different operating
-systems, my targets being Linux, BSD, MacOS (mainly for development, but also
-because, in the Academia, a lot of people use Apple computers), and maybe, some
-day, Windows. This is definitely Java's strong point, and excludes *de facto*
+of rules out Java, but not quite as it is a very good language when it comes to
+networking, and the portability is amazing. By 'portability', here I mean the
+ability to reuse essentially the same codebase for different operating systems,
+my targets being Linux, BSD, MacOS (mainly for development, but also because, in
+the Academia, a lot of people use Apple computers), and maybe, some day,
+Windows. This is definitely Java's strong point, and excludes *de facto*
 languages like Objective-C (which I know quite a bit), or C# (which I do not
 intend to know). Finally, efficiency is also an important criterion, although I
 could choose to implement the cryptographic primitives in a very performant
@@ -204,8 +204,10 @@ package manager of the distribution (for Linux, but Homebrew or MacPorts have
 essentially the same role on MacOS for that matter), it makes things hard when
 it comes to binary distribution and dynamic libraries (how do you make sure that
 your local build of RocksDB will behave similarly to the binary distributed by
-`apt` on an old Ubuntu LTS?). My experience with vcpkg (or Conan) is essentially
-zero, so I might (read surely) be mistaken here.
+`apt` on an old Ubuntu LTS?). The only real solution is to re-compile every
+dependency and hope they are all managed by your code package manager. Not
+ideal. My experience with vcpkg (or Conan) is essentially zero, so I might (read
+surely) be mistaken here.
 
 Also, CMake is... I have mixed feelings about CMake: it is super powerful, but
 not easy to use, and quite verbose. There is no surprise why it is used for
@@ -250,7 +252,7 @@ important. And from that point of find, I considered three main criterions:
 I don't have much of a problem with interpreted languages or languages using
 bytecode in themselves. They can be very useful and practical for many tasks.
 But it is hard to use them for high-performance disk IOs, mainly because it
-requires close interaction with the OS's kernel and a small latency.
+requires close interactions with the OS's kernel and a small latency.
 Unfortunately, languages that are not compiled to machine code cannot
 efficiently use such interfaces: the interpreter or the VM adds a lot of latency
 on the one hand, and as these languages are cross-platform, it is hard to use a
@@ -294,7 +296,7 @@ can find similar features in most of the other languages in my list, with the
 notable exception of Go (well, it has been introduced very lately, in December
 2021, and still looks a bit fresh).
 
-Note that this expressiveness requirement definitely barred Python from my list:
+Note that this expressiveness requirement barred Python from my list for good:
 it does not even have types...
 
 ### Why Rust?
@@ -334,10 +336,10 @@ appealing. Unfortunately, it is a new language for me, and it does not attract
 me a lot, especially given that I know Rust, which has not a massively different
 spirit, and which syntax I prefer.
 
-Finally, Go would be my second pick. The goroutines are look very nice: I like
-the concurrent and imperative approach a lot. I would (have) miss(ed) generics,
+Finally, Go would be my second pick. The goroutines look very nice: I like the
+concurrent and imperative approach a lot. I would (have) miss(ed) generics,
 though. The tooling looks great, too. Of course, I am also very interested in
-the language because of its spread (if Docker is implemented in Go, is *has* to
+the language because of its spread (if Docker is implemented in Go, it *has* to
 be for a reason). But in the end, I chose Rust for its better performance,
 better safety (in particular for concurrent code) and my pre-existing knowledge
 of the language (meaning I can start implementing with the right idioms right
